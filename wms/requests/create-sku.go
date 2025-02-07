@@ -1,5 +1,6 @@
 package requests
 type CreateSkuCtrlRequest struct {
+	
 	SellerID    string `json:"seller_id"`
 	SkuCode     string `json:"sku_code"`
 	Name        string `json:"name"`

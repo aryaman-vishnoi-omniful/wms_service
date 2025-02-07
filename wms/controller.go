@@ -165,11 +165,11 @@ func (wc *WMSController) GetHubs(c *gin.Context) {
 	c.JSON(http.StatusOK,gin.H{"the hubs are ":svcResp})
 }
 func (wc *WMSController) GetSku(c *gin.Context) {
-	tenantID := c.Query("tenant_id")
+	// tenantID := c.Query("tenant_id")
 	sellerID := c.Query("seller_id")
 	skuCode := c.Query("sku_code")
 
-	if tenantID == "" || sellerID == "" || skuCode == "" {
+	if sellerID == "" || skuCode == "" {
 		c.JSON(http.StatusBadRequest,gin.H{"error":"missing fields"})
 	}
 

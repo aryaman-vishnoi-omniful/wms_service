@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS inventories (
     id SERIAL PRIMARY KEY,
+    inv_id VARCHAR(100) NOT NULL,
     hub_id VARCHAR(100) NOT NULL,
     sku_id VARCHAR(100) NOT NULL,
     seller_id VARCHAR(100) NOT NULL, 
