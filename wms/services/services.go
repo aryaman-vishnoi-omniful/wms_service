@@ -1,74 +1,94 @@
 package services
 
 import (
-	// "encoding/json"
+	"context"
 	"wms_service/wms/repository"
 	"wms_service/wms/requests"
 	"wms_service/wms/responses"
-
-	"github.com/gin-gonic/gin"
 )
 
-
-func CreateSku(c *gin.Context, req *requests.CreateSkuCtrlRequest) (*responses.CreateSkuCtrlResponse, error) {
-
-	// var skumodel responses.CreateSkuCtrlResponse
+// Create SKU
+func CreateSku(ctx context.Context, req *requests.CreateSkuCtrlRequest) (*responses.CreateSkuCtrlResponse, error) {
 	sku := &responses.CreateSkuCtrlResponse{
-		// SkuID: req.SkuCode,
 		SellerID:    req.SellerID,
 		SkuCode:     req.SkuCode,
 		Name:        req.Name,
 		Price:       req.Price,
-		Fragile:     req.Fragile,
 		Dimensions:  req.Dimensions,
+		Fragile:     req.Fragile,
 		Description: req.Description,
 	}
-	err := repository.CreateSku(c,sku)
+	err := repository.CreateSku(ctx, sku)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	return sku, nil
-
 }
 
-func CreateHub(c *gin.Context, req *requests.CreateHubCtrlRequest) (*responses.CreateHubCtrlResponse, error) {
-
-	// var skumodel responses.CreateSkuCtrlResponse
+// Create Hub
+func CreateHub(ctx context.Context, req *requests.CreateHubCtrlRequest) (*responses.CreateHubCtrlResponse, error) {
 	hub := &responses.CreateHubCtrlResponse{
-		// SkuID: req.Sku,
-		// HubId: req.HubId,
-        HubName: req.HubName,
-        ContactNo: req.ContactNo,
-        Location: req.Location,
-        TenantID: req.TenantID,
-        Manager_email: req.Manager_email,
-
-
+		HubId:         req.HubId,
+		TenantID:      req.TenantID,
+		Manager_email: req.Manager_email,
+		ContactNo:     req.ContactNo,
+		HubName:       req.HubName,
+		Location:      req.Location,
 	}
-	err := repository.CreateHub(c,hub)
+	err := repository.CreateHub(ctx, hub)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	return hub, nil
-
 }
-func CreateInventory(c *gin.Context, req *requests.CreateInventoryCtrlRequest) (*responses.CreateInventoryCtrlResponse, error) {
 
-	// var skumodel responses.CreateSkuCtrlResponse
+// Create Inventory
+func CreateInventory(ctx context.Context, req *requests.CreateInventoryCtrlRequest) (*responses.CreateInventoryCtrlResponse, error) {
 	inv := &responses.CreateInventoryCtrlResponse{
-        Id: req.Id,
-        HubID: req.HubID,
-        SkuId: req.SkuId,
-        Quantity: req.Quantity,
-
-	
-
+		// Id:       req.InvID,
+		HubID:    req.HubID,
+		SkuId:    req.SkuId,
+		SellerID: req.SellerID,
+		Quantity: req.Quantity,
 	}
-	err := repository.CreateInventory(c,inv)
+	err := repository.CreateInventory(ctx, inv)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	return inv, nil
-
 }
 
+// Get Inventory
+func GetInventory(ctx context.Context, req *requests.GetInventorySvcRequest) (*responses.GetInventoryCtrlResponse, error) {
+	return repository.GetInventory(ctx, req)
+}
+
+// Deduct Inventory
+func DeductInventory(ctx context.Context, req *requests.AdjustInventoryCtrlRequest) (*responses.AdjustInventoryCtrlResponse, error) {
+	return repository.DeductInventory(ctx, req)
+}
+
+// Add Inventory
+func AddInventory(ctx context.Context, req *requests.AdjustInventoryCtrlRequest) (*responses.AdjustInventoryCtrlResponse, error) {
+	return repository.AddInventory(ctx, req)
+}
+
+// Get Hub
+func GetHub(ctx context.Context, hubID string) (*responses.GetHubCtrlResponse, error) {
+	return repository.GetHub(ctx, hubID)
+}
+
+// Get All Hubs
+func GetHubs(ctx context.Context, req *requests.GetHubsSvcRequest) (*responses.GetHubsCtrlResponse, error) {
+	return repository.GetHubs(ctx, req)
+}
+
+// Get SKU
+func GetSku(ctx context.Context, req *requests.GetSkuSvcRequest) (*responses.GetSkuCtrlResponse, error) {
+	return repository.GetSku(ctx, req)
+}
+
+// Get SKU by ID
+func GetSkuById(ctx context.Context, skuID string) (*responses.GetSkuCtrlResponse, error) {
+	return repository.GetSkuById(ctx, skuID)
+}

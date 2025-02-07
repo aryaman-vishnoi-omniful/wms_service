@@ -72,137 +72,136 @@ func (wc *WMSController) CreateInventory(c *gin.Context) {
 	c.JSON(http.StatusCreated,gin.H{"inventory created":svcResp})
 }
 
-// func (wc *WMSController) GetInventory(c *gin.Context) {
+func (wc *WMSController) GetInventory(c *gin.Context) {
 
-// 	sellerID := c.Query("seller_id")
-// 	hubID := c.Query("hub_id")
+	sellerID := c.Query("seller_id")
+	hubID := c.Query("hub_id")
 
-// 	if sellerID == "" || hubID == "" {
-// 		c.JSON(http.StatusBadRequest,gin.H{"error":"hub id or seller id required"})
-// 		return
-// 	}
+	if sellerID == "" || hubID == "" {
+		c.JSON(http.StatusBadRequest,gin.H{"error":"hub id or seller id required"})
+		return
+	}
 
-// 	svcReq := &requests.GetInventorySvcRequest{
-// 		SellerID: sellerID,
-// 		HubID:    hubID,
-// 	}
+	svcReq := &requests.GetInventorySvcRequest{
+		SellerID: sellerID,
+		HubID:    hubID,
+	}
 
-// 	svcResp, cusErr := services.GetInventory(c, svcReq)
-// 	if cusErr!=nil {
-// 		// commonError.NewErrorResponse(c, cusErr)
-// 		log.Fatal(cusErr.Error())
-// 		return
-// 	}
+	svcResp, cusErr := services.GetInventory(c, svcReq)
+	if cusErr!=nil {
+		// commonError.NewErrorResponse(c, cusErr)
+		log.Fatal(cusErr.Error())
+		return
+	}
 
-// 	c.JSON(http.StatusCreated,gin.H{"The inventory for this hub :":svcResp})
-// }
+	c.JSON(http.StatusCreated,gin.H{"The inventory for this hub :":svcResp})
+}
 
-// func (wc *WMSController) DeductInventory(c *gin.Context) {
-// 	var req *requests.AdjustInventoryCtrlRequest
-// 	if err := c.ShouldBindJSON(&req); err != nil {
-// 		c.JSON(http.StatusBadRequest,gin.H{"error":err.Error()})
-// 		return
-// 	}
+func (wc *WMSController) DeductInventory(c *gin.Context) {
+	var req *requests.AdjustInventoryCtrlRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest,gin.H{"error":err.Error()})
+		return
+	}
 
 
-// 	svcResp, cusErr := services.DeductInventory(c, req)
-// 	if cusErr!=nil {
+	svcResp, cusErr := services.DeductInventory(c, req)
+	if cusErr!=nil {
 		
-// 		log.Fatal(cusErr.Error())
-// 		return
-// 	}
+		log.Fatal(cusErr.Error())
+		return
+	}
 
-// 	c.JSON(http.StatusCreated,gin.H{"inventory updated":svcResp})
-// }
+	c.JSON(http.StatusCreated,gin.H{"inventory updated":svcResp})
+}
 
-// func (wc *WMSController) AddInventory(c *gin.Context) {
-// 	var req *requests.AdjustInventoryCtrlRequest
-// 	if err := c.ShouldBindJSON(&req); err != nil {
-// 		c.JSON(http.StatusBadRequest,gin.H{"error":err.Error()})
-// 		return
-// 	}
+func (wc *WMSController) AddInventory(c *gin.Context) {
+	var req *requests.AdjustInventoryCtrlRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest,gin.H{"error":err.Error()})
+		return
+	}
 
 
 
-// 	svcResp, cusErr := services.AddInventory(c, req)
-// 	if cusErr!=nil {
-// 		// commonError.NewErrorResponse(c, cusErr)
-// 		log.Fatal(cusErr.Error())
-// 		return
-// 	}
-// 	c.JSON(http.StatusCreated,gin.H{"inventory updated":svcResp})
-// }
+	svcResp, cusErr := services.AddInventory(c, req)
+	if cusErr!=nil {
+		// commonError.NewErrorResponse(c, cusErr)
+		log.Fatal(cusErr.Error())
+		return
+	}
+	c.JSON(http.StatusCreated,gin.H{"inventory updated":svcResp})
+}
 
-// func (wc *WMSController) GetHub(c *gin.Context) {
-// 	hubID := c.Param("id")
-// 	if hubID == "" {
-// 		c.JSON(http.StatusBadRequest,gin.H{"error":"missing hub id"})
-// 		return
-// 	}
+func (wc *WMSController) GetHub(c *gin.Context) {
+	hubID := c.Param("id")
+	if hubID == "" {
+		c.JSON(http.StatusBadRequest,gin.H{"error":"missing hub id"})
+		return
+	}
 
-// 	svcResp, cusErr := services.GetHub(c, hubID)
-// 	if cusErr!=nil{
-// 		log.Fatal("could not get the hub")
-// 		return
-// 	}
+	svcResp, cusErr := services.GetHub(c, hubID)
+	if cusErr!=nil{
+		log.Fatal("could not get the hub")
+		return
+	}
 
-// 	c.JSON(http.StatusOK,gin.H{"Details of the hub":svcResp})
-// }
+	c.JSON(http.StatusOK,gin.H{"Details of the hub":svcResp})
+}
 
-// func (wc *WMSController) GetHubs(c *gin.Context) {
-// 	tenantID := c.Query("tenant_id") // optional filter
-// 	svcReq := &requests.GetHubsSvcRequest{
-// 		TenantID: tenantID,
-// 	}
+func (wc *WMSController) GetHubs(c *gin.Context) {
+	tenantID := c.Query("tenant_id") // optional filter
+	svcReq := &requests.GetHubsSvcRequest{
+		TenantID: tenantID,
+	}
 
-// 	svcResp, cusErr := services.GetHubs(c, svcReq)
-// 	if cusErr!=nil{
-// 		log.Fatal("could not get hubs")
-// 		return
+	svcResp, cusErr := services.GetHubs(c, svcReq)
+	if cusErr!=nil{
+		log.Fatal("could not get hubs")
+		return
 
-// 	}
+	}
 
-// 	c.JSON(http.StatusOK,gin.H{"the hubs are ":svcResp})
-// }
-// func (wc *WMSController) GetSku(c *gin.Context) {
-// 	tenantID := c.Query("tenant_id")
-// 	sellerID := c.Query("seller_id")
-// 	skuCode := c.Query("sku_code")
+	c.JSON(http.StatusOK,gin.H{"the hubs are ":svcResp})
+}
+func (wc *WMSController) GetSku(c *gin.Context) {
+	tenantID := c.Query("tenant_id")
+	sellerID := c.Query("seller_id")
+	skuCode := c.Query("sku_code")
 
-// 	if tenantID == "" || sellerID == "" || skuCode == "" {
-// 		c.JSON(http.StatusBadRequest,gin.H{"error":"missing fields"})
-// 	}
+	if tenantID == "" || sellerID == "" || skuCode == "" {
+		c.JSON(http.StatusBadRequest,gin.H{"error":"missing fields"})
+	}
 
-// 	svcReq := &requests.GetSkuSvcRequest{
-// 		TenantID: tenantID,
-// 		SellerID: sellerID,
-// 		SkuCode:  skuCode,
-// 	}
+	svcReq := &requests.GetSkuSvcRequest{
+		SellerID: sellerID,
+		SkuCode:  skuCode,
+	}
 
-// 	svcResp, cusErr := services.GetSku(c, svcReq)
-// 	if cusErr!=nil{
-// 		log.Fatal("could not get sku")
-// 		return
-// 	}
+	svcResp, cusErr := services.GetSku(c, svcReq)
+	if cusErr!=nil{
+		log.Fatal("could not get sku")
+		return
+	}
 
-// 	c.JSON(http.StatusOK,gin.H{"the sku details are ":svcResp})
-// }
-// func (wc *WMSController) GetSkuById(c *gin.Context) {
-// 	skuID := c.Param("id")
-// 	if skuID == "" {
-// 		c.JSON(http.StatusBadRequest,gin.H{"eror":"include id"})
-// 	}
+	c.JSON(http.StatusOK,gin.H{"the sku details are ":svcResp})
+}
+func (wc *WMSController) GetSkuById(c *gin.Context) {
+	skuID := c.Param("id")
+	if skuID == "" {
+		c.JSON(http.StatusBadRequest,gin.H{"eror":"include id"})
+	}
 
 	
 
-// 	svcResp, cusErr := services.GetSkuById(c, skuID)
-// 	if cusErr!=nil{
-// 		log.Fatal("could not get sku")
-// 		return
-// 	}
+	svcResp, cusErr := services.GetSkuById(c, skuID)
+	if cusErr!=nil{
+		log.Fatal("could not get sku")
+		return
+	}
 
-// 	c.JSON(http.StatusOK,gin.H{"fetched sku details":svcResp})
-// }
+	c.JSON(http.StatusOK,gin.H{"fetched sku details":svcResp})
+}
 
 
 

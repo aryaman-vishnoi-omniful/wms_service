@@ -10,9 +10,20 @@ type CreateSkuCtrlResponse struct {
 	Dimensions  string `gorm:"column:dimensions;type:varchar(100)" json:"dimensions"`
 	Fragile     string `gorm:"column:fragile;type:varchar(10)" json:"fragile"`
 	Description string `gorm:"column:description;type:text" json:"description,omitempty"`
-	
+}
+func (CreateSkuCtrlResponse) TableName() string {
+	return "skus"
 }
 
-func (CreateSkuCtrlResponse) TableName() string {
-    return "skus"  // Ensure this matches the actual table name in your DB
+
+
+type GetSkuCtrlResponse struct {
+	gorm.Model
+	SellerID    string `json:"seller_id"`
+	SkuCode     string `json:"sku_code"`
+	Name        string `json:"name"`
+	Price       int    `json:"price"`
+	Dimensions  string `json:"dimensions"`
+	Fragile     string `json:"fragile"`
+	Description string `json:"description,omitempty"`
 }

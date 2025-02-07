@@ -32,14 +32,14 @@ func Initialize(ctx context.Context, s *http.Server) (err error) {
 	wms_v1.POST("/create-sku", WMSController.CreateSku)
 	wms_v1.POST("/create-hub",WMSController.CreateHub)
 	wms_v1.POST("/create-inventory",WMSController.CreateInventory)
-	// wms_v1.GET("/GetInventory",WMSController.GetInventory)
-	// wms_v1.PUT("/inventory/deduct",WMSController.DeductInventory)
-	// wms_v1.PUT("/inventory/add",WMSController.AddInventory)
-	// wms_v1.GET("/getHub/:id",WMSController.GetHub)
-	// wms_v1.GET("/getHubs",WMSController.GetHubs)
-	// // wms_v1.GET("/getSkus",WMSController.GetSkus)
-	// wms_v1.GET("/getSku",WMSController.GetSku)
-	// wms_v1.GET("/getSkuById/:id",WMSController.GetSkuById)
+	wms_v1.GET("/GetInventory",WMSController.GetInventory)
+	wms_v1.PUT("/inventory/deduct",WMSController.DeductInventory)
+	wms_v1.PUT("/inventory/add",WMSController.AddInventory)
+	wms_v1.GET("/getHub/:id",WMSController.GetHub)
+	wms_v1.GET("/getHubs",WMSController.GetHubs)
+	// wms_v1.GET("/getSkus",WMSController.GetSkus)
+	wms_v1.GET("/getSku",WMSController.GetSku)
+	wms_v1.GET("/getSkuById/:id",WMSController.GetSkuById)
 	
 
 

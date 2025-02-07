@@ -1,7 +1,11 @@
-CREATE TABLE inventories (
-    inv_id VARCHAR(100) PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS inventories (
+    id SERIAL PRIMARY KEY,
     hub_id VARCHAR(100) NOT NULL,
     sku_id VARCHAR(100) NOT NULL,
-    quantity INT NOT NULL
-    
+    seller_id VARCHAR(100) NOT NULL, 
+    quantity INT NOT NULL,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL
+
 );

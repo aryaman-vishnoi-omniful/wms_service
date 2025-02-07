@@ -1,37 +1,143 @@
 package repository
 
 import (
+	"context"
 	"errors"
-	// "wms_service/postgres"
 	"wms_service/postgres"
+	"wms_service/wms/requests"
 	"wms_service/wms/responses"
-
-	"github.com/gin-gonic/gin"
 )
-
-
 
 var DB *postgres.Db
 
 func InitializeDB() {
 	DB = postgres.GetCluster()
 }
+func CreateSku(ctx context.Context, sku *responses.CreateSkuCtrlResponse) error {
+	if DB == nil {
+		return errors.New("database connection is not initialized")
+	}
+	return DB.GetMasterDB(ctx).Create(sku).Error
+}
 
-func CreateSku(c *gin.Context, sku *responses.CreateSkuCtrlResponse) error {
+func CreateHub(ctx context.Context, hub *responses.CreateHubCtrlResponse) error {
 	if DB == nil {
 		return errors.New("database connection is not initialized")
 	}
-	return DB.GetMasterDB(c).Create(sku).Error
+	return DB.GetMasterDB(ctx).Create(hub).Error
 }
-func CreateHub(c *gin.Context,hub *responses.CreateHubCtrlResponse) error {
+
+func CreateInventory(ctx context.Context, inv *responses.CreateInventoryCtrlResponse) error {
 	if DB == nil {
 		return errors.New("database connection is not initialized")
 	}
-	return DB.GetMasterDB(c).Create(hub).Error
+	return DB.GetMasterDB(ctx).Create(inv).Error
 }
-func CreateInventory(c *gin.Context,inv *responses.CreateInventoryCtrlResponse) error {
+
+func GetInventory(ctx context.Context, req *requests.GetInventorySvcRequest) (*responses.GetInventoryCtrlResponse, error) {
 	if DB == nil {
-		return errors.New("database connection is not initialized")
+		return nil, errors.New("database connection is not initialized")
 	}
-	return DB.GetMasterDB(c).Create(inv).Error
+	var inventories []responses.CreateInventoryCtrlResponse
+	err := DB.GetMasterDB(ctx).Where("seller_id = ? AND hub_id = ?", req.SellerID, req.HubID).Find(&inventories).Error
+	if err != nil {
+		return nil, err
+	}
+	items := []responses.InventoryItem{}
+	for _, inv := range inventories {
+		items = append(items, responses.InventoryItem{
+			SkuCode:   inv.SkuId, 
+			HubID:     inv.HubID,
+			Inventory: inv.Quantity,
+		})
+	}
+	return &responses.GetInventoryCtrlResponse{InventoryItems: items}, nil
+}
+
+func DeductInventory(ctx context.Context, req *requests.AdjustInventoryCtrlRequest) (*responses.AdjustInventoryCtrlResponse, error) {
+	if DB == nil {
+		return nil, errors.New("database connection is not initialized")
+	}
+	err := DB.GetMasterDB(ctx).Exec(
+		"UPDATE inventories SET quantity = quantity - ? WHERE hub_id = ? AND sku_id = ? AND seller_id = ?",
+		req.Quantity, req.HubID, req.SkuCode, req.SellerID,
+	).Error
+	if err != nil {
+		return nil, err
+	}
+	return &responses.AdjustInventoryCtrlResponse{
+		HubID:    req.HubID,
+		SkuId:    req.SkuCode,
+		Quantity: req.Quantity,
+	}, nil
+}
+
+func AddInventory(ctx context.Context, req *requests.AdjustInventoryCtrlRequest) (*responses.AdjustInventoryCtrlResponse, error) {
+	if DB == nil {
+		return nil, errors.New("database connection is not initialized")
+	}
+	err := DB.GetMasterDB(ctx).Exec(
+		"UPDATE inventories SET quantity = quantity + ? WHERE hub_id = ? AND sku_id = ? AND seller_id = ?",
+		req.Quantity, req.HubID, req.SkuCode, req.SellerID,
+	).Error
+	if err != nil {
+		return nil, err
+	}
+	return &responses.AdjustInventoryCtrlResponse{
+		HubID:    req.HubID,
+		SkuId:    req.SkuCode,
+		Quantity: req.Quantity,
+	}, nil
+}
+func GetHub(ctx context.Context, hubID string) (*responses.GetHubCtrlResponse, error) {
+	if DB == nil {
+		return nil, errors.New("database connection is not initialized")
+	}
+	var hub responses.GetHubCtrlResponse
+	err := DB.GetMasterDB(ctx).Where("hub_id = ?", hubID).First(&hub).Error
+	if err != nil {
+		return nil, err
+	}
+	return &hub, nil
+}
+
+func GetHubs(ctx context.Context, req *requests.GetHubsSvcRequest) (*responses.GetHubsCtrlResponse, error) {
+	if DB == nil {
+		return nil, errors.New("database connection is not initialized")
+	}
+	var hubs []responses.GetHubCtrlResponse
+	query := DB.GetMasterDB(ctx).Model(&responses.CreateHubCtrlResponse{})
+	if req.TenantID != "" {
+		query = query.Where("tenant_id = ?", req.TenantID)
+	}
+	err := query.Find(&hubs).Error
+	if err != nil {
+		return nil, err
+	}
+	return &responses.GetHubsCtrlResponse{Hubs: hubs}, nil
+}
+
+// Get SKU by query parameters
+func GetSku(ctx context.Context, req *requests.GetSkuSvcRequest) (*responses.GetSkuCtrlResponse, error) {
+	if DB == nil {
+		return nil, errors.New("database connection is not initialized")
+	}
+	var sku responses.GetSkuCtrlResponse
+	err := DB.GetMasterDB(ctx).Where("seller_id = ? AND sku_code = ?", req.SellerID, req.SkuCode).First(&sku).Error
+	if err != nil {
+		return nil, err
+	}
+	return &sku, nil
+}
+
+func GetSkuById(ctx context.Context, skuID string) (*responses.GetSkuCtrlResponse, error) {
+	if DB == nil {
+		return nil, errors.New("database connection is not initialized")
+	}
+	var sku responses.GetSkuCtrlResponse
+	err := DB.GetMasterDB(ctx).Where("id = ?", skuID).First(&sku).Error
+	if err != nil {
+		return nil, err
+	}
+	return &sku, nil
 }

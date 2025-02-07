@@ -8,6 +8,6 @@ CREATE TABLE IF NOT EXISTS skus (
     fragile VARCHAR(10),
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- ✅ Add the missing comma here
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL
 );
