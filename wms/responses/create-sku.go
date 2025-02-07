@@ -10,5 +10,9 @@ type CreateSkuCtrlResponse struct {
 	Dimensions  string `gorm:"column:dimensions;type:varchar(100)" json:"dimensions"`
 	Fragile     string `gorm:"column:fragile;type:varchar(10)" json:"fragile"`
 	Description string `gorm:"column:description;type:text" json:"description,omitempty"`
+	
 }
 
+func (CreateSkuCtrlResponse) TableName() string {
+    return "skus"  // Ensure this matches the actual table name in your DB
+}

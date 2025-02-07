@@ -8,6 +8,7 @@ import (
 	kafka_producer "wms_service/kafka"
 	"wms_service/postgres"
 	"wms_service/redis"
+	"wms_service/wms/repository"
 
 	// "oms_service/database"
 
@@ -111,6 +112,8 @@ func InitializeDB(ctx context.Context) {
 	log.InfofWithContext(ctx, "Initialized Postgres DB client")
 	// database.SetCluster(db)
 	postgres.SetCluster(db)
+	repository.InitializeDB()
+	fmt.Println("database initialized")
 }
 
 func InitializeKafka(ctx context.Context) {
