@@ -1,0 +1,31 @@
+server:
+  port: ":8081"
+service:
+  name: "wms_service"
+
+redis:
+  clusterMode: false
+  hosts: "127.0.0.1:7005"
+  db: 1
+
+postgresql:
+  debugMode: true
+  database: "wms_service_db"
+  maxOpenConns: 10
+  maxIdleConns: 2
+  master:
+    host: "localhost"
+    port: "5432"
+    username: "postgres"
+    password: "aryaman2003"
+  slaves:
+    hosts: "localhost"
+    port: "5432"
+    username: "postgres"
+    password: "aryaman2003"
+
+onlineKafka:
+  brokers:
+    - "localhost:9092"
+  clientId: "wms-service"
+  version: 2.0.0
