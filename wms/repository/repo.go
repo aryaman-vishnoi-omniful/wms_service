@@ -2,8 +2,12 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"time"
 	"wms_service/postgres"
+	"wms_service/redis"
 	"wms_service/wms/requests"
 	"wms_service/wms/responses"
 )
@@ -101,6 +105,8 @@ func GetHub(ctx context.Context, hubID string) (*responses.GetHubCtrlResponse, e
 	return &hub, nil
 }
 
+
+
 func GetHubs(ctx context.Context, req *requests.GetHubsSvcRequest) (*responses.GetHubsCtrlResponse, error) {
 	if DB == nil {
 		return nil, errors.New("database connection is not initialized")
@@ -134,10 +140,35 @@ func GetSkuById(ctx context.Context, skuID string) (*responses.GetSkuCtrlRespons
 	if DB == nil {
 		return nil, errors.New("database connection is not initialized")
 	}
+	cacheKey := fmt.Sprintf("sku:%s", skuID)
+	RD:=redis.GetClient()
+	cached_data,err:=RD.Get(ctx,cacheKey)
+	if err == nil {
+		// Cache Hit: Unmarshal the cached JSON response
+		var sku responses.GetSkuCtrlResponse
+		if err := json.Unmarshal([]byte(cached_data), &sku); err == nil {
+			fmt.Println()
+			fmt.Println()
+			fmt.Println("Cache hit for SKU:", skuID)
+			fmt.Println()
+			fmt.Println()
+			return &sku, nil
+		}
+	}
+
+
 	var sku responses.GetSkuCtrlResponse
-	err := DB.GetMasterDB(ctx).Where("id = ?", skuID).First(&sku).Error
+	err = DB.GetMasterDB(ctx).Where("id = ?", skuID).First(&sku).Error
 	if err != nil {
 		return nil, err
 	}
+	jsonData, _ := json.Marshal(sku)
+	RD.Set(ctx,cacheKey,string(jsonData),1*time.Minute)
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	fmt.Println("Cache miss, fetched from DB:", skuID)
+	fmt.Println()
+	fmt.Println()
 	return &sku, nil
 }

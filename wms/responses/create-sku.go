@@ -27,3 +27,6 @@ type GetSkuCtrlResponse struct {
 	Fragile     string `json:"fragile"`
 	Description string `json:"description,omitempty"`
 }
+func (GetSkuCtrlResponse) TableName() string {
+    return "skus"
+}
